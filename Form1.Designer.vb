@@ -88,9 +88,7 @@ Partial Class Form1
         'WebView22
         '
         Me.WebView22.AllowExternalDrop = True
-        Me.WebView22.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.WebView22.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.WebView22.CreationProperties = Nothing
         Me.WebView22.DefaultBackgroundColor = System.Drawing.Color.White
         Me.WebView22.Location = New System.Drawing.Point(12, 42)
@@ -105,13 +103,13 @@ Partial Class Form1
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(800, 450)
-        Me.Controls.Add(Me.WebView22)
         Me.Controls.Add(Me.SiteSize)
         Me.Controls.Add(Me.btnGo)
         Me.Controls.Add(Me.txtAddressBar)
         Me.Controls.Add(Me.btnRefresh)
         Me.Controls.Add(Me.btnForward)
         Me.Controls.Add(Me.btnBack)
+        Me.Controls.Add(Me.WebView22)
         Me.Name = "Form1"
         Me.Text = "Form1"
         CType(Me.WebView22, System.ComponentModel.ISupportInitialize).EndInit()

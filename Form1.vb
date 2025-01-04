@@ -51,9 +51,9 @@ Public Class Form1
     ' This event is triggered when the WebView2 initialization is completed
     Private Sub WebView21_CoreWebView2InitializationCompleted(sender As Object, e As CoreWebView2InitializationCompletedEventArgs) Handles WebView21.CoreWebView2InitializationCompleted
         ' Update the address bar with the current URL
-        txtAddressBar.Text = WebView21.Source.ToString()
+        'txtAddressBar.Text = WebView21.Source.ToString()
         ' Update the title label with the current title
-        Me.Text = "Title: " & WebView21.CoreWebView2.DocumentTitle
+        'Me.Text = "Title: " & WebView21.CoreWebView2.DocumentTitle
     End Sub
 
     ' This event is triggered when navigation is completed
