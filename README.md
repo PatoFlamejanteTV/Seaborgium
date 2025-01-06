@@ -1,9 +1,9 @@
 # Seaborgium
 
-> [!WARNING]
+> [!CAUTION]
 > DO NOT USE THIS FOR (ACTUAL) BROWSING!!! This is in testing and the scripts may interact with your REAL COMPUTER!!!
 
-> [!CAUTION]
+> [!NOTE]
 > Heavy WIP project.
 
 Web browser written in VB.NET with suppost to HTML/CSS/JS + IronPython + VB.NET. Written mainly using `Microsoft.Web.WebView2`.
