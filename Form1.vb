@@ -5,46 +5,39 @@ Imports Microsoft.VisualBasic
 Imports IronPython.Hosting
 Imports HtmlAgilityPack
 Imports System.Text.RegularExpressions
+Imports LuaInterface
 
 Public Class Form1
-    ' Declare the WebView2 control
+    
+    Public luascripting As New Lua()
     Private WithEvents WebView21 As New WebView2()
 
-    ' This event is triggered when the form loads
     Private Async Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Initialize the WebView2 control
         WebView21.Dock = DockStyle.Fill
         Me.Controls.Add(WebView21)
         Await WebView21.EnsureCoreWebView2Async(Nothing)
 
-        ' Set the initial URL of the web browser
         WebView21.Source = New Uri("https://ultimatequack.neocities.org/mybrowsertest")
     End Sub
 
-    ' This event is triggered when the "Go" button is clicked
     Private Sub btnGo_Click(sender As Object, e As EventArgs) Handles btnGo.Click
         ProcessInput(txtAddressBar.Text)
     End Sub
 
-    ' This event is triggered when the "Back" button is clicked
     Private Sub btnBack_Click(sender As Object, e As EventArgs) Handles btnBack.Click
-        ' Navigate to the previous page
         If WebView21.CanGoBack Then
             WebView21.GoBack()
         End If
     End Sub
 
-    ' This event is triggered when the "Forward" button is clicked
     Private Sub btnForward_Click(sender As Object, e As EventArgs) Handles btnForward.Click
-        ' Navigate to the next page
         If WebView21.CanGoForward Then
             WebView21.GoForward()
         End If
     End Sub
 
-    ' This event is triggered when the "Refresh" button is clicked
     Private Sub btnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
-        ' Refresh the current page
         WebView21.Reload()
     End Sub
 
@@ -63,6 +56,13 @@ Public Class Form1
         ' Update the title label with the current title
         Me.Text = "Title: " & WebView21.CoreWebView2.DocumentTitle
 
+        Dim currentDirectory As String = Environment.CurrentDirectory
+        ' Define a JavaScript variable to store the directory
+        Dim setDirScript As String = $"internal.seaborgium.currentDir = '{currentDirectory}';"
+        WebView21.CoreWebView2.ExecuteScriptAsync(setDirScript)
+
+        Console.WriteLine("EXECUTED:" & setDirScript)
+
         ' Update the size label with the size of the content (if possible)
         Dim sizeScript As String = "document.documentElement.outerHTML.length.toString()"
         WebView21.CoreWebView2.ExecuteScriptAsync(sizeScript).ContinueWith(Sub(task)
@@ -72,6 +72,9 @@ Public Class Form1
                                                                                                  End Sub))
                                                                            End Sub)
 
+
+
+
         ' Process the page content for <python> and <vbnet> tags
         ProcessPageContent()
     End Sub
@@ -79,17 +82,21 @@ Public Class Form1
     ' Process the input URL or code
     Private Sub ProcessInput(input As String)
         If input.StartsWith("javascript:") Then
-            ' Execute JavaScript code
+            'JavaScript code
             Dim jsCode As String = input.Substring("javascript:".Length)
             WebView21.CoreWebView2.ExecuteScriptAsync(jsCode)
         ElseIf input.StartsWith("vbnet:") Then
-            ' Execute VB.NET code
+            'VB.NET code
             Dim vbCode As String = input.Substring("vbnet:".Length)
             ExecuteVbNetCode(vbCode)
         ElseIf input.StartsWith("python:") Then
-            ' Execute Python code
+            'Python code
             Dim pythonCode As String = input.Substring("python:".Length)
             ExecutePythonCode(pythonCode)
+        ElseIf input.StartsWith("lua:") Then
+            'VB.NET code
+            Dim luaCode As String = input.Substring("lua:".Length)
+            ExecuteLuaCode(luaCode)
         Else
             ' Add protocol if missing
             If Not input.StartsWith("https://") AndAlso Not input.StartsWith("http://") Then
@@ -148,6 +155,15 @@ Public Class Form1
             engine.Execute(pythonCode)
         Catch ex As Exception
             MessageBox.Show("Error executing Python code: " & ex.Message)
+        End Try
+    End Sub
+
+    ' Method to execute Lua code
+    Private Sub ExecuteLuaCode(LuaCode As String)
+        Try
+            luascripting.DoString(LuaCode)
+        Catch ex As Exception
+            MessageBox.Show("Error executing Lua code: " & ex.Message)
         End Try
     End Sub
 
@@ -212,6 +228,22 @@ Public Class Form1
                                                                                                                                        Next
                                                                                                                                    Else
                                                                                                                                        Console.WriteLine("No <vbnet> nodes detected.")
+                                                                                                                                   End If
+
+                                                                                                                                   ' Process <lua> tags
+                                                                                                                                   Dim luaNodes = htmlDoc.DocumentNode.SelectNodes("//lua")
+                                                                                                                                   If luaNodes IsNot Nothing Then
+                                                                                                                                       Console.WriteLine("Detected <lua> nodes!")
+                                                                                                                                       For Each luaNode In luaNodes
+                                                                                                                                           Dim luaCode As String = luaNode.InnerText.Replace("\n", Environment.NewLine).Replace("\\", "\")
+                                                                                                                                           ' Ensure VB.NET strings use double quotes
+                                                                                                                                           luaCode = luaCode.Replace("'", """")
+                                                                                                                                           MessageBox.Show("Lua: " & luaCode)
+                                                                                                                                           ExecuteVbNetCode(luaCode)
+                                                                                                                                           Console.WriteLine("Executed <lua> node with the following code: " & luaCode)
+                                                                                                                                       Next
+                                                                                                                                   Else
+                                                                                                                                       Console.WriteLine("No <lua> nodes detected.")
                                                                                                                                    End If
                                                                                                                                End Sub))
                                                                                                          End Sub)
