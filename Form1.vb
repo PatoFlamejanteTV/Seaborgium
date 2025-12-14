@@ -10,6 +10,7 @@ Imports LuaInterface
 Public Class Form1
     
     Public luascripting As New Lua()
+    Private pythonEngine = Python.CreateEngine()
     Private WithEvents WebView21 As New WebView2()
 
     Private Async Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -149,10 +150,8 @@ Public Class Form1
     ' Method to execute Python code
     Private Sub ExecutePythonCode(pythonCode As String)
         Try
-            ' Create a new Python engine
-            Dim engine = Python.CreateEngine()
             ' Execute the Python code
-            engine.Execute(pythonCode)
+            pythonEngine.Execute(pythonCode)
         Catch ex As Exception
             MessageBox.Show("Error executing Python code: " & ex.Message)
         End Try
@@ -206,7 +205,7 @@ Public Class Form1
                                                                                                                                        Console.WriteLine("Detected <python> nodes!")
                                                                                                                                        For Each pythonNode In pythonNodes
                                                                                                                                            Dim pythonCode As String = pythonNode.InnerText.Replace("\n", Environment.NewLine).Replace("\\", "\")
-                                                                                                                                           MessageBox.Show("Python: " & pythonCode)
+                                                                                                                                           ' MessageBox.Show("Python: " & pythonCode)
                                                                                                                                            ExecutePythonCode(pythonCode)
                                                                                                                                            Console.WriteLine("Executed <python> node with the following code: " & pythonCode)
                                                                                                                                        Next
@@ -222,7 +221,7 @@ Public Class Form1
                                                                                                                                            Dim vbNetCode As String = vbNetNode.InnerText.Replace("\n", Environment.NewLine).Replace("\\", "\")
                                                                                                                                            ' Ensure VB.NET strings use double quotes
                                                                                                                                            vbNetCode = vbNetCode.Replace("'", """")
-                                                                                                                                           MessageBox.Show("VB.NET: " & vbNetCode)
+                                                                                                                                           ' MessageBox.Show("VB.NET: " & vbNetCode)
                                                                                                                                            ExecuteVbNetCode(vbNetCode)
                                                                                                                                            Console.WriteLine("Executed <vbnet> node with the following code: " & vbNetCode)
                                                                                                                                        Next
@@ -238,8 +237,8 @@ Public Class Form1
                                                                                                                                            Dim luaCode As String = luaNode.InnerText.Replace("\n", Environment.NewLine).Replace("\\", "\")
                                                                                                                                            ' Ensure VB.NET strings use double quotes
                                                                                                                                            luaCode = luaCode.Replace("'", """")
-                                                                                                                                           MessageBox.Show("Lua: " & luaCode)
-                                                                                                                                           ExecuteVbNetCode(luaCode)
+                                                                                                                                           ' MessageBox.Show("Lua: " & luaCode)
+                                                                                                                                           ExecuteLuaCode(luaCode)
                                                                                                                                            Console.WriteLine("Executed <lua> node with the following code: " & luaCode)
                                                                                                                                        Next
                                                                                                                                    Else
